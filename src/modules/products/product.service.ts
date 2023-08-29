@@ -34,7 +34,12 @@ export class ProdcutService {
     return productDTO;
   }
 
-  deleteProduct(): any {
-    return 'Delete Product';
+  deleteProduct(id: number): boolean {
+    const index = this.products.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      this.products.splice(index, 1);
+      return true;
+    }
+    return false;
   }
 }
