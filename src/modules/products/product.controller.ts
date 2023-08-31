@@ -7,13 +7,13 @@ import { ProductDTO } from 'src/DTO/product.dto';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly producService: ProdcutService) {}
+  constructor(private readonly productService: ProdcutService) {}
 
   @Get()
   getProducts(): ResponseData<Product[]> {
     try {
       return new ResponseData<Product[]>(
-        this.producService.getProducts(),
+        this.productService.getProducts(),
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );
@@ -30,7 +30,7 @@ export class ProductController {
   createProduct(@Body(new ValidationPipe()) productDTO: ProductDTO): ResponseData<ProductDTO> {
     try {
       return new ResponseData<Product>(
-        this.producService.createProduct(productDTO),
+        this.productService.createProduct(productDTO),
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );
@@ -47,7 +47,7 @@ export class ProductController {
   detailProduct(@Param('id') id: number): ResponseData<Product> {
     try {
       return new ResponseData<Product>(
-        this.producService.detailProduct(Number(id)),
+        this.productService.detailProduct(Number(id)),
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );
@@ -64,7 +64,7 @@ export class ProductController {
   updateProduct(@Body() productDTO: ProductDTO, @Param('id') id: number): ResponseData<Product> {
     try {
       return new ResponseData<Product>(
-        this.producService.updateProduct(productDTO, Number(id)),
+        this.productService.updateProduct(productDTO, Number(id)),
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );
@@ -81,7 +81,7 @@ export class ProductController {
   deleteProduct(@Param('id') id: number): ResponseData<boolean> {
     try {
       return new ResponseData<boolean>(
-        this.producService.deleteProduct(Number(id)),
+        this.productService.deleteProduct(Number(id)),
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );
