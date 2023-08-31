@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ValidationPipe } from '@nestjs/common';
-import { ProdcutService } from './product.service';
+import {Controller, Get, Post, Put, Delete, ValidationPipe, Param, Body} from '@nestjs/common';
+import { ProductService } from './product.service';
 import { ResponseData } from 'src/global/globalClass';
 import { HttpMessage, HttpStatus } from 'src/global/global.enum';
 import { Product } from 'src/models/product.model';
@@ -7,7 +7,7 @@ import { ProductDTO } from 'src/DTO/product.dto';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProdcutService) {}
+  constructor(private readonly productService: ProductService) {}
 
   @Get()
   getProducts(): ResponseData<Product[]> {

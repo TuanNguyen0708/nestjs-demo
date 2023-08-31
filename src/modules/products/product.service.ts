@@ -3,7 +3,7 @@ import { ProductDTO } from 'src/DTO/product.dto';
 import { Product } from 'src/models/product.model';
 
 @Injectable()
-export class ProdcutService {
+export class ProductService {
   private products: Product[] = [
     { id: 1, category: 2, price: 80000, productName: 'Mouse' },
     { id: 2, category: 3, price: 44000, productName: 'Keyboard' },
