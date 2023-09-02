@@ -1,25 +1,34 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { ProductDTO } from 'src/DTO/product.dto';
 import { Product } from 'src/models/product.model';
+import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProductEntity } from 'src/entities/product.entity';
 
 @Injectable()
 export class ProductService {
+  constructor(
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
+  ) {}
+
   private products: Product[] = [
     { id: 1, category: 2, price: 80000, productName: 'Mouse' },
     { id: 2, category: 3, price: 44000, productName: 'Keyboard' },
   ];
 
-  getProducts(): Product[] {
-    return this.products;
+  async getProducts(): Promise<Product[]> {
+    return await this.productRepository.find();
   }
 
-  createProduct(productDTO: ProductDTO): Product {
+  async createProduct(productDTO: ProductDTO): Promise<Product> {
     const product: Product = {
       id: Math.random(),
       ...productDTO,
     };
-    this.products.push(product);
-    return product;
+    console.log(this.productRepository);
+    
+    return await this.productRepository.save(product);
   }
 
   detailProduct(id: number): Product {
@@ -34,12 +43,13 @@ export class ProductService {
     return productDTO;
   }
 
-  deleteProduct(id: number): boolean {
-    const index = this.products.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      this.products.splice(index, 1);
-      return true;
-    }
-    return false;
+  async deleteProduct(id: number): Promise<any> {
+    // const index = this.products.findIndex((item) => item.id === id);
+    // if (index !== -1) {
+    //   this.products.splice(index, 1);
+    //   return true;
+    // }
+    // return false;
+    return await this.productRepository.delete(id);
   }
 }
