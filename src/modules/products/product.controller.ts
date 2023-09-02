@@ -1,11 +1,11 @@
-import {Controller, Get, Post, Put, Delete, ValidationPipe, Param, Body} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ResponseData } from 'src/global/globalClass';
 import { HttpMessage, HttpStatus } from 'src/global/global.enum';
 import { Product } from 'src/models/product.model';
 import { ProductDTO } from 'src/DTO/product.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, ValidationPipe } from '@nestjs/common';
 
-@Controller('products')
+@Controller('api/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -27,7 +27,9 @@ export class ProductController {
   }
 
   @Post()
-  createProduct(@Body(new ValidationPipe()) productDTO: ProductDTO): ResponseData<ProductDTO> {
+  createProduct(
+    @Body(new ValidationPipe()) productDTO: ProductDTO,
+  ): ResponseData<ProductDTO> {
     try {
       return new ResponseData<Product>(
         this.productService.createProduct(productDTO),
@@ -61,7 +63,10 @@ export class ProductController {
   }
 
   @Put('/:id')
-  updateProduct(@Body() productDTO: ProductDTO, @Param('id') id: number): ResponseData<Product> {
+  updateProduct(
+    @Body() productDTO: ProductDTO,
+    @Param('id') id: number,
+  ): ResponseData<Product> {
     try {
       return new ResponseData<Product>(
         this.productService.updateProduct(productDTO, Number(id)),
