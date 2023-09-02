@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { ProductDTO } from 'src/DTO/product.dto';
 import { Product } from 'src/models/product.model';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOneOptions, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/entities/product.entity';
 
@@ -27,29 +27,34 @@ export class ProductService {
       ...productDTO,
     };
     console.log(this.productRepository);
-    
+
     return await this.productRepository.save(product);
   }
 
-  detailProduct(id: number): Product {
-    return this.products.find((item) => item.id === id);
+  async detailProduct(id: number): Promise<Product> {
+    const options: FindOneOptions<Product> = {
+      where: { id },
+    };
+    return await this.productRepository.findOne(options);
   }
 
-  updateProduct(productDTO: ProductDTO, id: number): Product {
-    const index = this.products.findIndex((item) => item.id === id);
-    this.products[index].category = productDTO.category;
-    this.products[index].price = productDTO.price;
-    this.products[index].productName = productDTO.productName;
-    return productDTO;
+  async updateProduct(productDTO: ProductDTO, id: number): Promise<Product> {
+    const options: FindOneOptions<Product> = {
+      where: { id },
+    };
+
+    const existingProduct = await this.productRepository.findOne(options);
+
+    if (!existingProduct) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+
+    Object.assign(existingProduct, productDTO);
+
+    return await this.productRepository.save(existingProduct);
   }
 
   async deleteProduct(id: number): Promise<any> {
-    // const index = this.products.findIndex((item) => item.id === id);
-    // if (index !== -1) {
-    //   this.products.splice(index, 1);
-    //   return true;
-    // }
-    // return false;
     return await this.productRepository.delete(id);
   }
 }

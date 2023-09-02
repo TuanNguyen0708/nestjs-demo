@@ -39,56 +39,32 @@ export class ProductController {
   }
 
   @Get('/:id')
-  detailProduct(@Param('id') id: number): ResponseData<Product> {
+  async detailProduct(@Param('id') id: number): Promise<Product> {
     try {
-      return new ResponseData<Product>(
-        this.productService.detailProduct(Number(id)),
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return await this.productService.detailProduct(Number(id));
     } catch (error) {
-      return new ResponseData<Product>(
-        null,
-        HttpStatus.ERROR,
-        HttpMessage.ERROR,
-      );
+      return new Promise<Product>(null);
     }
   }
 
   @Put('/:id')
-  updateProduct(
+  async updateProduct(
     @Body() productDTO: ProductDTO,
     @Param('id') id: number,
-  ): ResponseData<Product> {
+  ): Promise<Product> {
     try {
-      return new ResponseData<Product>(
-        this.productService.updateProduct(productDTO, Number(id)),
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return await this.productService.updateProduct(productDTO, Number(id));
     } catch (error) {
-      return new ResponseData<Product>(
-        null,
-        HttpStatus.ERROR,
-        HttpMessage.ERROR,
-      );
+      return new Promise<Product>(null);
     }
   }
 
   @Delete('/:id')
-  deleteProduct(@Param('id') id: number): ResponseData<boolean> {
+  async deleteProduct(@Param('id') id: number): Promise<any> {
     try {
-      return new ResponseData<boolean>(
-        this.productService.deleteProduct(Number(id)),
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return await this.productService.deleteProduct(Number(id));
     } catch (error) {
-      return new ResponseData<boolean>(
-        null,
-        HttpStatus.ERROR,
-        HttpMessage.ERROR,
-      );
+      return new Promise<boolean>(null);
     }
   }
 }
