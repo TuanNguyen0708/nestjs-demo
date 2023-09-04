@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { ProductDTO } from 'src/DTO/product.dto';
 import { Product } from 'src/models/product.model';
-import { DataSource, FindOneOptions, Repository, UpdateResult } from 'typeorm';
+import { FindOneOptions, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/entities/product.entity';
 
@@ -12,26 +12,15 @@ export class ProductService {
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
-  private products: Product[] = [
-    { id: 1, category: 2, price: 80000, productName: 'Mouse' },
-    { id: 2, category: 3, price: 44000, productName: 'Keyboard' },
-  ];
-
   async getProducts(): Promise<Product[]> {
     return await this.productRepository.find();
   }
 
   async createProduct(productDTO: ProductDTO): Promise<Product> {
-    const product: Product = {
-      id: Math.random(),
-      ...productDTO,
-    };
-    console.log(this.productRepository);
-
-    return await this.productRepository.save(product);
+    return await this.productRepository.save(productDTO);
   }
 
-  async detailProduct(id: number): Promise<Product> {
+  async detailProduct(id: number): Promise<ProductEntity> {
     const options: FindOneOptions<Product> = {
       where: { id },
     };
@@ -39,12 +28,7 @@ export class ProductService {
   }
 
   async updateProduct(productDTO: ProductDTO, id: number): Promise<Product> {
-    const options: FindOneOptions<Product> = {
-      where: { id },
-    };
-
-    const existingProduct = await this.productRepository.findOne(options);
-
+    const existingProduct = await this.detailProduct(id);
     if (!existingProduct) {
       throw new Error(`Product with ID ${id} not found`);
     }
@@ -54,7 +38,11 @@ export class ProductService {
     return await this.productRepository.save(existingProduct);
   }
 
-  async deleteProduct(id: number): Promise<any> {
-    return await this.productRepository.delete(id);
+  async deleteProduct(id: number): Promise<ProductEntity> {
+    const existingProduct = await this.detailProduct(id);
+    if (!existingProduct) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+    return await this.productRepository.remove(existingProduct);
   }
 }

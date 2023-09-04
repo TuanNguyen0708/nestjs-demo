@@ -1,6 +1,4 @@
 import { ProductService } from './product.service';
-import { ResponseData } from 'src/global/globalClass';
-import { HttpMessage, HttpStatus } from 'src/global/global.enum';
 import { Product } from 'src/models/product.model';
 import { ProductDTO } from 'src/DTO/product.dto';
 import {
@@ -12,13 +10,17 @@ import {
   Post,
   Put,
   ValidationPipe,
+  UseGuards
 } from '@nestjs/common';
+import { ProductEntity } from 'src/entities/product.entity';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 
 @Controller('api/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getProducts(): Promise<Product[]> {
     try {
       return this.productService.getProducts();
@@ -28,6 +30,7 @@ export class ProductController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   createProduct(
     @Body(new ValidationPipe()) productDTO: ProductDTO,
   ): Promise<ProductDTO> {
@@ -39,6 +42,7 @@ export class ProductController {
   }
 
   @Get('/:id')
+  @UseGuards(JwtAuthGuard)
   async detailProduct(@Param('id') id: number): Promise<Product> {
     try {
       return await this.productService.detailProduct(Number(id));
@@ -48,6 +52,7 @@ export class ProductController {
   }
 
   @Put('/:id')
+  @UseGuards(JwtAuthGuard)
   async updateProduct(
     @Body() productDTO: ProductDTO,
     @Param('id') id: number,
@@ -60,11 +65,12 @@ export class ProductController {
   }
 
   @Delete('/:id')
-  async deleteProduct(@Param('id') id: number): Promise<any> {
+  @UseGuards(JwtAuthGuard)
+  async deleteProduct(@Param('id') id: number): Promise<ProductEntity> {
     try {
       return await this.productService.deleteProduct(Number(id));
     } catch (error) {
-      return new Promise<boolean>(null);
+      return new Promise<ProductEntity>(null);
     }
   }
 }

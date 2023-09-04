@@ -41,12 +41,12 @@ export class AppComponent implements OnInit {
 
   async updateProduct() {
     const product = {
-      id: 1,
-      category: 1,
-      productName: "Ahihi",
+      id: 3,
+      category: 3,
+      productName: "ttt",
       price: 80000
   }
-    await firstValueFrom(this.appService.updateProduct(1, product))
+    await firstValueFrom(this.appService.updateProduct(3, product))
   }
 
   async deleteProduct() {
